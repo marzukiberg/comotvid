@@ -1,0 +1,11 @@
+{
+  "name": "comotvid",
+  "version": "1.1.0",
+  "private": true,
+  "description": "ComotVid — Private Instagram Downloader (client-side + local resolver)",
+  "scripts": {
+    "dev": "PORT=${PORT:-8787} ./dev.sh",
+    "start": "python3 server.py",
+    "check": "node --check app.js && python3 -c \"import ast; ast.parse(open('server.py').read())\""
+  }
+}
