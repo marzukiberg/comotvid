@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IG Story Saver — Private Downloader</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  .step-num { width: 2rem; height: 2rem; }
+  textarea { font-family: ui-monospace, monospace; }
+  .media-card img, .media-card video { max-height: 320px; }
+</style>
+</head>
+<body class="bg-gray-50 min-h-screen text-gray-900">
+<div class="max-w-2xl mx-auto px-4 py-8">
+
+  <header class="text-center mb-8">
+    <div class="flex items-center justify-center gap-2 mb-2">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>
+      <h1 class="text-2xl font-bold">IG Story Saver</h1>
+    </div>
+    <p class="text-gray-600">Download foto & video dari story Instagram privat<br><span class="text-sm">(akun yang kamu follow & login di browser)</span></p>
+  </header>
+
+  <!-- STEP 1 -->
+  <section class="bg-white rounded-xl shadow p-5 mb-4">
+    <div class="flex items-center gap-3 mb-3">
+      <div class="step-num rounded-full bg-black text-white flex items-center justify-center font-bold">1</div>
+      <h2 class="font-semibold">Tempel link story Instagram</h2>
+    </div>
+    <p class="text-sm text-gray-600 mb-2">Login ke Instagram di PC, buka story-nya, lalu copy URL-nya.</p>
+    <div class="flex gap-2">
+      <input id="storyUrl" type="text" placeholder="https://www.instagram.com/stories/username/..."
+        class="flex-1 border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black">
+      <button onclick="genStep2()" class="bg-black text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-800">Buat Link</button>
+    </div>
+    <p id="userInfo" class="text-sm text-green-700 mt-2 hidden"></p>
+  </section>
+
+  <!-- STEP 2 -->
+  <section id="step2" class="bg-white rounded-xl shadow p-5 mb-4 hidden">
+    <div class="flex items-center gap-3 mb-3">
+      <div class="step-num rounded-full bg-black text-white flex items-center justify-center font-bold">2</div>
+      <h2 class="font-semibold">Dapatkan User ID dulu</h2>
+    </div>
+    <p class="text-sm text-gray-600 mb-2">Story butuh <b>numeric User ID</b>. Buka link ini di tab baru (pastikan sudah login IG), lalu cari <code class="bg-gray-100 px-1 rounded">"id":"..."</code> di halamannya.</p>
+    <div class="flex gap-2 mb-4">
+      <input id="profileUrl" type="text" readonly class="flex-1 border rounded-lg px-3 py-2 text-xs bg-gray-50 text-gray-600">
+      <button onclick="copyEl('profileUrl', this)" class="border px-3 py-2 rounded-lg text-sm hover:bg-gray-100">Salin</button>
+      <button onclick="openUrl('profileUrl')" class="border px-3 py-2 rounded-lg text-sm hover:bg-gray-100">Buka</button>
+    </div>
+    <div class="flex items-center gap-3 mb-3">
+      <div class="step-num rounded-full bg-gray-300 text-gray-700 flex items-center justify-center font-bold text-sm">2b</div>
+      <h2 class="font-semibold">Tempel User ID → dapat link GraphQL</h2>
+    </div>
+    <div class="flex gap-2 mb-2">
+      <input id="userId" type="text" placeholder="cth: 123456789" class="flex-1 border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black">
+      <button onclick="genGraphql()" class="bg-black text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-800">Generate</button>
+    </div>
+    <div id="gqlBox" class="hidden">
+      <p class="text-sm text-gray-600 mb-2">Copy link ini, buka di tab baru.</p>
+      <div class="flex gap-2">
+        <input id="gqlUrl" type="text" readonly class="flex-1 border rounded-lg px-3 py-2 text-xs bg-gray-50 text-gray-600">
+        <button onclick="copyEl('gqlUrl', this)" class="border px-3 py-2 rounded-lg text-sm hover:bg-gray-100">Salin</button>
+        <button onclick="openUrl('gqlUrl')" class="border px-3 py-2 rounded-lg text-sm hover:bg-gray-100">Buka</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 3 -->
+  <section class="bg-white rounded-xl shadow p-5 mb-4">
+    <div class="flex items-center gap-3 mb-3">
+      <div class="step-num rounded-full bg-black text-white flex items-center justify-center font-bold">3</div>
+      <h2 class="font-semibold">Tempel isi halaman JSON</h2>
+    </div>
+    <p class="text-sm text-gray-600 mb-2">Di tab GraphQL tadi: <b>Ctrl+U</b> (view source) → <b>Ctrl+A</b> → <b>Ctrl+C</b>, lalu paste di sini.</p>
+    <textarea id="jsonInput" rows="6" placeholder="Paste seluruh isi page source (JSON) di sini..."
+      class="w-full border rounded-lg px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-black"></textarea>
+    <button onclick="parseJson()" class="w-full bg-black text-white py-3 rounded-lg font-medium mt-3 hover:bg-gray-800">Download</button>
+    <p id="parseError" class="text-sm text-red-600 mt-2 hidden"></p>
+  </section>
+
+  <!-- RESULTS -->
+  <section id="results" class="hidden">
+    <h2 class="font-semibold mb-3"><span id="mediaCount">0</span> media ditemukan</h2>
+    <div id="mediaGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+  </section>
+
+  <!-- SETTINGS -->
+  <details class="bg-white rounded-xl shadow p-5 mt-4 text-sm">
+    <summary class="font-semibold cursor-pointer">Pengaturan Lanjutan</summary>
+    <div class="mt-3 space-y-2">
+      <label class="block text-gray-600">GraphQL doc_id (ganti kalau Instagram update & link tidak jalan):</label>
+      <input id="docId" type="text" value="26659189347081290" class="w-full border rounded-lg px-3 py-2 text-xs">
+      <p class="text-xs text-gray-500">Cara dapat doc_id terbaru: buka instagram.com di browser → F12 → Console → ketik <code class="bg-gray-100 px-1 rounded">require('PolarisStoriesV3ReelPageGalleryQuery.graphql').params.id</code></p>
+    </div>
+  </details>
+
+  <footer class="text-center text-xs text-gray-400 mt-8">
+    Berjalan lokal via Tailscale · hanya untuk akun yang kamu ikuti
+  </footer>
+</div>
+
+<script>
+function copyEl(id, btn) {
+  const el = document.getElementById(id);
+  el.select(); el.setSelectionRange(0, 99999);
+  navigator.clipboard.writeText(el.value).then(() => {
+    const t = btn.textContent; btn.textContent = 'Tersalin!';
+    setTimeout(() => btn.textContent = t, 1500);
+  });
+}
+function openUrl(id) {
+  window.open(document.getElementById(id).value, '_blank');
+}
+function extractUsername(url) {
+  const m = url.match(/instagram\.com\/(?:stories\/)?([A-Za-z0-9._]+)/);
+  return m ? m[1] : null;
+}
+function genStep2() {
+  const url = document.getElementById('storyUrl').value.trim();
+  const user = extractUsername(url);
+  const info = document.getElementById('userInfo');
+  if (!user) {
+    info.classList.remove('hidden');
+    info.className = 'text-sm text-red-600 mt-2';
+    info.textContent = 'URL tidak dikenali. Pakai format instagram.com/stories/username';
+    return;
+  }
+  document.getElementById('profileUrl').value =
+    'https://www.instagram.com/api/v1/users/web_profile_info/?username=' + user;
+  document.getElementById('step2').classList.remove('hidden');
+  info.classList.remove('hidden');
+  info.className = 'text-sm text-green-700 mt-2';
+  info.textContent = 'Username terdeteksi: @' + user;
+  document.getElementById('step2').scrollIntoView({behavior:'smooth'});
+}
+function genGraphql() {
+  const uid = document.getElementById('userId').value.trim();
+  if (!/^\d+$/.test(uid)) { alert('User ID harus angka.'); return; }
+  const docId = document.getElementById('docId').value.trim() || '26659189347081290';
+  const vars = { reel_ids: [uid], first: 50 };
+  const url = 'https://www.instagram.com/graphql/query/?doc_id=' + docId
+    + '&variables=' + encodeURIComponent(JSON.stringify(vars));
+  document.getElementById('gqlUrl').value = url;
+  document.getElementById('gqlBox').classList.remove('hidden');
+}
+function bestUrl(cands) {
+  if (!cands || !cands.length) return null;
+  let best = cands[0];
+  for (const c of cands) {
+    if ((c.width||0)*(c.height||0) > (best.width||0)*(best.height||0)) best = c;
+  }
+  return best.url;
+}
+function parseJson() {
+  const raw = document.getElementById('jsonInput').value.trim();
+  const err = document.getElementById('parseError');
+  err.classList.add('hidden');
+  if (!raw) { err.textContent = 'Tempel dulu isi JSON-nya.'; err.classList.remove('hidden'); return; }
+  let data;
+  try { data = JSON.parse(raw); }
+  catch(e) { err.textContent = 'Bukan JSON valid: ' + e.message; err.classList.remove('hidden'); return; }
+
+  const items = [];
+  // Format 1: data.xdt_api__v1__feed__reels_media.reels = { userId: { items: [...] } }
+  const reelsWrapper = data?.data?.xdt_api__v1__feed__reels_media?.reels;
+  if (reelsWrapper) {
+    for (const rid of Object.keys(reelsWrapper)) {
+      const reel = reelsWrapper[rid];
+      (reel.items || []).forEach(it => items.push(normItem(it)));
+    }
+  }
+  // Format 2: data.reels_media = [ { id, items: [...] } ]
+  const rm = data?.data?.reels_media;
+  if (Array.isArray(rm)) {
+    rm.forEach(r => (r.items || []).forEach(it => items.push(normItem(it))));
+  }
+  // Format 3: langsung reels = { userId: { items } }
+  const r3 = data?.reels;
+  if (r3 && !reelsWrapper) {
+    for (const rid of Object.keys(r3)) {
+      (r3[rid].items || []).forEach(it => items.push(normItem(it)));
+    }
+  }
+  // Format 4: tray = [ { user: {username}, items } ]
+  const tray = data?.tray;
+  if (Array.isArray(tray)) {
+    tray.forEach(t => (t.items || []).forEach(it => items.push(normItem(it))));
+  }
+
+  const valid = items.filter(Boolean);
+  renderResults(valid);
+  if (!valid.length) {
+    err.textContent = 'Tidak ada media ditemukan. Pastikan JSON dari URL GraphQL yang benar & story masih ada.';
+    err.classList.remove('hidden');
+  }
+}
+function normItem(it) {
+  if (!it) return null;
+  const isVideo = it.media_type === 2;
+  let url = null, thumb = null;
+  if (isVideo) {
+    url = it.video_versions?.[0]?.url || null;
+    thumb = bestUrl(it.image_versions2?.candidates);
+  } else {
+    url = bestUrl(it.image_versions2?.candidates) || it.display_url || null;
+  }
+  if (!url) return null;
+  return { url, thumb, isVideo, takenAt: it.taken_at ? new Date(it.taken_at*1000).toLocaleString('id-ID') : '' };
+}
+function renderResults(items) {
+  const grid = document.getElementById('mediaGrid');
+  grid.innerHTML = '';
+  document.getElementById('mediaCount').textContent = items.length;
+  document.getElementById('results').classList.remove('hidden');
+  items.forEach((m, i) => {
+    const card = document.createElement('div');
+    card.className = 'media-card bg-white rounded-xl shadow p-3';
+    const badge = m.isVideo
+      ? '<span class="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded">Video</span>'
+      : '<span class="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded">Foto</span>';
+    const preview = m.isVideo
+      ? `<video src="${m.url}" controls preload="metadata" class="w-full rounded-lg mb-2"></video>`
+      : `<img src="${m.url}" loading="lazy" class="w-full rounded-lg mb-2 object-contain bg-gray-100">`;
+    card.innerHTML = `
+      <div class="flex items-center justify-between mb-2">${badge}
+      <span class="text-xs text-gray-400">${m.takenAt}</span></div>
+      ${preview}
+      <a href="${m.url}" download="ig-story-${i+1}.${m.isVideo?'mp4':'jpg'}" target="_blank"
+        class="block text-center bg-black text-white py-2 rounded-lg text-sm font-medium hover:bg-gray-800">Download</a>`;
+    grid.appendChild(card);
+  });
+  document.getElementById('results').scrollIntoView({behavior:'smooth'});
+}
+</script>
+</body>
+</html>
