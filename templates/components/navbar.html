@@ -1,8 +1,8 @@
 <nav class="flex flex-col gap-2 mb-8 bg-white p-2.5 rounded-2xl shadow-sm border border-slate-200/80">
   <div class="flex items-center justify-between">
     <a href="/" class="flex items-center gap-2.5 px-2 py-1 font-bold text-slate-900 group">
-      <div class="w-10 h-10 min-w-10 min-h-10 max-w-10 max-h-10 rounded-xl bg-slate-900 text-white shadow-sm flex items-center justify-center shrink-0 aspect-square group-hover:bg-slate-800 transition">
-        <i class="ph ph-download-simple text-xl leading-none"></i>
+      <div class="brand-bg w-10 h-10 min-w-10 min-h-10 max-w-10 max-h-10 rounded-xl text-white shadow-sm flex items-center justify-center shrink-0 aspect-square brand-bg-hover transition">
+        <i class="ph {{ platform_icon or 'ph-download-simple' }} text-xl leading-none"></i>
       </div>
       <span class="text-base tracking-tight font-bold">ComotVid</span>
     </a>
@@ -11,7 +11,7 @@
         <i class="ph ph-house text-sm"></i>
         <span>Beranda</span>
       </a>
-      <a href="/private" class="px-3.5 py-2 rounded-xl {% if active_page == 'private' %}bg-slate-900 text-white shadow-sm{% else %}text-slate-600 hover:text-slate-900 hover:bg-slate-100{% endif %} flex items-center gap-1.5 transition">
+      <a href="/private" class="px-3.5 py-2 rounded-xl {% if active_page == 'private' %}bg-amber-600 text-white shadow-sm{% else %}text-slate-600 hover:text-slate-900 hover:bg-slate-100{% endif %} flex items-center gap-1.5 transition">
         <i class="ph ph-lock-key text-sm"></i>
         <span>Private IG</span>
       </a>
@@ -19,19 +19,19 @@
   </div>
   {% if active_page == 'public' %}
   <div class="flex items-center gap-1.5 overflow-x-auto pt-2 border-t border-slate-100 no-scrollbar">
-    <a href="/" class="platform-pill {% if active_platform in ['auto', none, ''] %}platform-pill-active{% endif %}">
+    <a href="/" class="platform-pill pill-auto {% if active_platform in ['auto', none, ''] %}platform-pill-active{% endif %}">
       <i class="ph ph-squares-four text-sm"></i><span>Semua</span>
     </a>
-    <a href="/instagram" class="platform-pill {% if active_platform == 'instagram' %}platform-pill-active{% endif %}">
+    <a href="/instagram" class="platform-pill pill-instagram {% if active_platform == 'instagram' %}platform-pill-active{% endif %}">
       <i class="ph ph-instagram-logo text-sm"></i><span>Instagram</span>
     </a>
-    <a href="/youtube" class="platform-pill {% if active_platform == 'youtube' %}platform-pill-active{% endif %}">
+    <a href="/youtube" class="platform-pill pill-youtube {% if active_platform == 'youtube' %}platform-pill-active{% endif %}">
       <i class="ph ph-youtube-logo text-sm"></i><span>YouTube</span>
     </a>
-    <a href="/tiktok" class="platform-pill {% if active_platform == 'tiktok' %}platform-pill-active{% endif %}">
+    <a href="/tiktok" class="platform-pill pill-tiktok {% if active_platform == 'tiktok' %}platform-pill-active{% endif %}">
       <i class="ph ph-tiktok-logo text-sm"></i><span>TikTok</span>
     </a>
-    <a href="/pinterest" class="platform-pill {% if active_platform == 'pinterest' %}platform-pill-active{% endif %}">
+    <a href="/pinterest" class="platform-pill pill-pinterest {% if active_platform == 'pinterest' %}platform-pill-active{% endif %}">
       <i class="ph ph-pinterest-logo text-sm"></i><span>Pinterest</span>
     </a>
   </div>

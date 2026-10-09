@@ -2,12 +2,12 @@
 
 {% block title %}ComotVid — {{ platform_title }}{% endblock %}
 
-{% block body_attrs %}x-data="publicDownloader()" x-init="initPlatform('{{ active_platform }}')"{% endblock %}
+{% block body_attrs %}class="bg-slate-50 min-h-screen text-slate-900 antialiased theme-{{ active_platform or 'auto' }}" x-data="publicDownloader()" x-init="initPlatform('{{ active_platform }}')"{% endblock %}
 
 {% block content %}
   <!-- HEADER -->
   <header class="text-center mb-8">
-    <div class="w-12 h-12 min-w-12 min-h-12 rounded-2xl bg-slate-900 text-white shadow-sm mb-3 mx-auto flex items-center justify-center shrink-0 aspect-square">
+    <div class="brand-bg w-12 h-12 min-w-12 min-h-12 rounded-2xl text-white shadow-sm mb-3 mx-auto flex items-center justify-center shrink-0 aspect-square">
       <i class="ph {{ platform_icon }} text-2xl leading-none"></i>
     </div>
     <h1 class="text-2xl font-bold tracking-tight text-slate-900">{{ platform_heading }}</h1>
@@ -23,9 +23,9 @@
           <i class="ph ph-link text-base"></i>
         </div>
         <input x-model="url" @keydown.enter="fetchMedia()" type="text" :placeholder="platformPlaceholder()"
-          class="w-full h-11 border border-slate-300 rounded-xl pl-10 pr-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900 leading-tight">
+          class="brand-ring w-full h-11 border border-slate-300 rounded-xl pl-10 pr-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 leading-tight">
       </div>
-      <button @click="fetchMedia()" :disabled="loading" class="h-11 bg-slate-900 hover:bg-slate-800 text-white px-6 rounded-xl text-sm font-semibold shadow-sm transition inline-flex items-center justify-center gap-2 shrink-0 disabled:opacity-60">
+      <button @click="fetchMedia()" :disabled="loading" class="brand-btn h-11 px-6 rounded-xl text-sm font-semibold shadow-sm transition inline-flex items-center justify-center gap-2 shrink-0 disabled:opacity-60">
         <i class="ph ph-cloud-arrow-down text-lg" x-show="!loading"></i>
         <i class="ph ph-spinner animate-spin text-lg" x-show="loading" style="display: none;"></i>
         <span x-text="loading ? 'Mengambil media...' : 'Download'"></span>
@@ -36,17 +36,17 @@
   </section>
 
   <!-- PRIVATE BANNER CTA (IG Only) -->
-  <div x-show="platform === 'auto' || platform === 'instagram'" class="bg-slate-100 border border-slate-200 rounded-2xl p-4 mb-6 flex items-center justify-between gap-4">
+  <div x-show="platform === 'auto' || platform === 'instagram'" class="bg-amber-50 border border-amber-200/80 rounded-2xl p-4 mb-6 flex items-center justify-between gap-4">
     <div class="flex items-center gap-3">
-      <div class="w-10 h-10 min-w-10 min-h-10 rounded-xl bg-white shadow-xs text-slate-800 flex items-center justify-center shrink-0 aspect-square">
+      <div class="w-10 h-10 min-w-10 min-h-10 rounded-xl bg-amber-500 text-white shadow-xs flex items-center justify-center shrink-0 aspect-square">
         <i class="ph ph-lock-key text-xl"></i>
       </div>
       <div>
-        <h2 class="text-xs font-bold text-slate-800">Mau download Story akun Privat?</h2>
-        <p class="text-[11px] text-slate-500">Gunakan fitur Private Story Downloader untuk story akun yang kamu follow.</p>
+        <h2 class="text-xs font-bold text-amber-950">Mau download Story akun Privat?</h2>
+        <p class="text-[11px] text-amber-800">Gunakan fitur Private Story Downloader untuk story akun yang kamu follow.</p>
       </div>
     </div>
-    <a href="/private" class="shrink-0 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold px-3.5 py-2 rounded-xl shadow-xs transition">
+    <a href="/private" class="shrink-0 bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold px-3.5 py-2 rounded-xl shadow-xs transition">
       Buka Private &rarr;
     </a>
   </div>
@@ -86,7 +86,7 @@
             </template>
           </div>
 
-          <a :href="m.url" :download="'media-' + (i + 1) + '.' + (m.isVideo ? 'mp4' : (m.isAudio ? 'mp3' : 'jpg'))" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 text-center bg-slate-900 hover:bg-slate-800 text-white py-2.5 rounded-xl text-sm font-medium shadow-sm transition mt-3">
+          <a :href="m.url" :download="'media-' + (i + 1) + '.' + (m.isVideo ? 'mp4' : (m.isAudio ? 'mp3' : 'jpg'))" target="_blank" rel="noopener noreferrer" class="brand-btn inline-flex items-center justify-center gap-2 text-center py-2.5 rounded-xl text-sm font-medium shadow-sm transition mt-3">
             <i class="ph ph-download-simple text-base"></i>
             <span x-text="'Download ' + (m.isVideo ? 'Video' : (m.isAudio ? 'Audio' : 'Foto'))"></span>
           </a>

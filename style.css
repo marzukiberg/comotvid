@@ -10,21 +10,144 @@ textarea {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
-/* Solid Clean Buttons (Tanpa Gradient) */
-.btn-primary {
+.theme-auto .brand-bg {
   background-color: #0f172a;
-  color: #ffffff;
-  transition: background-color 0.15s ease, opacity 0.15s ease;
 }
-.btn-primary:hover {
+.theme-auto .brand-bg-hover:hover {
   background-color: #1e293b;
 }
-.btn-primary:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+.theme-auto .brand-text {
+  color: #0f172a;
+}
+.theme-auto .brand-border {
+  border-color: #0f172a;
+}
+.theme-auto .brand-ring:focus {
+  --tw-ring-color: #0f172a;
+}
+.theme-auto .brand-btn {
+  background-color: #0f172a;
+  color: #ffffff;
+}
+.theme-auto .brand-btn:hover {
+  background-color: #1e293b;
 }
 
-/* Card Styling */
+.theme-instagram .brand-bg {
+  background-color: #e1306c;
+}
+.theme-instagram .brand-bg-hover:hover {
+  background-color: #c1275b;
+}
+.theme-instagram .brand-text {
+  color: #e1306c;
+}
+.theme-instagram .brand-border {
+  border-color: #e1306c;
+}
+.theme-instagram .brand-ring:focus {
+  --tw-ring-color: #e1306c;
+}
+.theme-instagram .brand-btn {
+  background-color: #e1306c;
+  color: #ffffff;
+}
+.theme-instagram .brand-btn:hover {
+  background-color: #c1275b;
+}
+
+.theme-youtube .brand-bg {
+  background-color: #ff0000;
+}
+.theme-youtube .brand-bg-hover:hover {
+  background-color: #cc0000;
+}
+.theme-youtube .brand-text {
+  color: #ff0000;
+}
+.theme-youtube .brand-border {
+  border-color: #ff0000;
+}
+.theme-youtube .brand-ring:focus {
+  --tw-ring-color: #ff0000;
+}
+.theme-youtube .brand-btn {
+  background-color: #ff0000;
+  color: #ffffff;
+}
+.theme-youtube .brand-btn:hover {
+  background-color: #cc0000;
+}
+
+.theme-tiktok .brand-bg {
+  background-color: #000000;
+}
+.theme-tiktok .brand-bg-hover:hover {
+  background-color: #171717;
+}
+.theme-tiktok .brand-text {
+  color: #000000;
+}
+.theme-tiktok .brand-border {
+  border-color: #000000;
+}
+.theme-tiktok .brand-ring:focus {
+  --tw-ring-color: #000000;
+}
+.theme-tiktok .brand-btn {
+  background-color: #000000;
+  color: #ffffff;
+}
+.theme-tiktok .brand-btn:hover {
+  background-color: #171717;
+}
+
+.theme-pinterest .brand-bg {
+  background-color: #e60023;
+}
+.theme-pinterest .brand-bg-hover:hover {
+  background-color: #b8001c;
+}
+.theme-pinterest .brand-text {
+  color: #e60023;
+}
+.theme-pinterest .brand-border {
+  border-color: #e60023;
+}
+.theme-pinterest .brand-ring:focus {
+  --tw-ring-color: #e60023;
+}
+.theme-pinterest .brand-btn {
+  background-color: #e60023;
+  color: #ffffff;
+}
+.theme-pinterest .brand-btn:hover {
+  background-color: #b8001c;
+}
+
+.theme-private .brand-bg {
+  background-color: #d97706;
+}
+.theme-private .brand-bg-hover:hover {
+  background-color: #b45309;
+}
+.theme-private .brand-text {
+  color: #d97706;
+}
+.theme-private .brand-border {
+  border-color: #d97706;
+}
+.theme-private .brand-ring:focus {
+  --tw-ring-color: #d97706;
+}
+.theme-private .brand-btn {
+  background-color: #d97706;
+  color: #ffffff;
+}
+.theme-private .brand-btn:hover {
+  background-color: #b45309;
+}
+
 .media-card {
   background-color: #ffffff;
   border-radius: 1rem;
@@ -42,7 +165,6 @@ textarea {
   border-radius: 0.75rem;
 }
 
-/* Navigation Platform Pills */
 .platform-pill {
   display: inline-flex;
   align-items: center;
@@ -62,16 +184,34 @@ textarea {
   background-color: #f1f5f9;
 }
 .platform-pill.platform-pill-active {
-  color: #0f172a;
   background-color: #ffffff;
   border-color: #e2e8f0;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
-.platform-pill.platform-pill-active:hover {
-  background-color: #f8fafc;
+.platform-pill.platform-pill-active.pill-auto {
+  color: #0f172a;
+}
+.platform-pill.platform-pill-active.pill-instagram {
+  color: #e1306c;
+  border-color: rgba(225, 48, 108, 0.3);
+  background-color: #fff1f2;
+}
+.platform-pill.platform-pill-active.pill-youtube {
+  color: #ff0000;
+  border-color: rgba(255, 0, 0, 0.3);
+  background-color: #fef2f2;
+}
+.platform-pill.platform-pill-active.pill-tiktok {
+  color: #000000;
+  border-color: rgba(0, 0, 0, 0.3);
+  background-color: #fafafa;
+}
+.platform-pill.platform-pill-active.pill-pinterest {
+  color: #e60023;
+  border-color: rgba(230, 0, 35, 0.3);
+  background-color: #fef2f2;
 }
 
-/* No Scrollbar Utility */
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;

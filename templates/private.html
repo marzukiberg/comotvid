@@ -2,12 +2,12 @@
 
 {% block title %}ComotVid — Instagram Private Story Downloader{% endblock %}
 
-{% block body_attrs %}x-data="privateDownloader()" x-init="init()"{% endblock %}
+{% block body_attrs %}class="bg-slate-50 min-h-screen text-slate-900 antialiased theme-private" x-data="privateDownloader()" x-init="init()"{% endblock %}
 
 {% block content %}
   <!-- HEADER -->
   <header class="text-center mb-8">
-    <div class="w-12 h-12 min-w-12 min-h-12 rounded-2xl bg-slate-900 text-white shadow-sm mb-3 mx-auto flex items-center justify-center shrink-0 aspect-square">
+    <div class="brand-bg w-12 h-12 min-w-12 min-h-12 rounded-2xl text-white shadow-sm mb-3 mx-auto flex items-center justify-center shrink-0 aspect-square">
       <i class="ph ph-lock-key text-2xl leading-none"></i>
     </div>
     <h1 class="text-2xl font-bold tracking-tight text-slate-900">Private Story & Media Downloader</h1>
@@ -17,7 +17,7 @@
   <!-- STEP 1: INPUT LINK -->
   <section class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-5 mb-4">
     <div class="flex items-center gap-3 mb-2">
-      <div class="step-badge rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-sm">1</div>
+      <div class="brand-bg step-badge rounded-full text-white flex items-center justify-center font-bold text-sm">1</div>
       <div>
         <h2 class="font-semibold text-slate-800">Masukkan Link Story Privat</h2>
         <p class="text-xs text-slate-500">Contoh: https://www.instagram.com/stories/username/123456789/</p>
@@ -25,8 +25,8 @@
     </div>
     <div class="flex flex-col sm:flex-row items-stretch gap-2 mt-3">
       <input x-model="inputUrl" @input.debounce.400ms="convertLink()" type="text" placeholder="https://www.instagram.com/stories/username/..."
-        class="flex-1 h-11 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900 leading-tight">
-      <button @click="convertLink()" :disabled="converting" class="h-11 bg-slate-900 hover:bg-slate-800 text-white px-5 rounded-xl text-sm font-semibold shadow-sm transition inline-flex items-center justify-center gap-1.5 shrink-0 disabled:opacity-60">
+        class="brand-ring flex-1 h-11 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 leading-tight">
+      <button @click="convertLink()" :disabled="converting" class="brand-btn h-11 px-5 rounded-xl text-sm font-semibold shadow-sm transition inline-flex items-center justify-center gap-1.5 shrink-0 disabled:opacity-60">
         <i class="ph ph-arrows-clockwise text-base" x-show="!converting"></i>
         <i class="ph ph-spinner animate-spin text-base" x-show="converting" style="display: none;"></i>
         <span x-text="converting ? 'Memproses...' : 'Proses Link'"></span>
@@ -49,7 +49,7 @@
     <!-- STEP 2 (MANUAL) -->
     <section class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-5">
       <div class="flex items-center gap-3 mb-2">
-        <div class="step-badge rounded-full bg-slate-800 text-white flex items-center justify-center font-bold text-sm">2</div>
+        <div class="brand-bg step-badge rounded-full text-white flex items-center justify-center font-bold text-sm">2</div>
         <div>
           <h2 class="font-semibold text-slate-800">Buka Link GraphQL di Tab Baru</h2>
           <p class="text-xs text-slate-500">Buka link ini di browser yang sudah login Instagram</p>
@@ -66,7 +66,7 @@
               <i class="ph ph-copy text-sm"></i>
               <span x-text="copiedText"></span>
             </button>
-            <a :href="gqlUrl" target="_blank" rel="noopener noreferrer" class="h-11 bg-slate-900 text-white px-4 rounded-xl text-xs font-semibold hover:bg-slate-800 transition inline-flex items-center justify-center gap-1.5">
+            <a :href="gqlUrl" target="_blank" rel="noopener noreferrer" class="brand-btn h-11 px-4 rounded-xl text-xs font-semibold transition inline-flex items-center justify-center gap-1.5">
               <i class="ph ph-arrow-square-out text-sm"></i><span>Buka Link</span>
             </a>
           </div>
@@ -80,15 +80,15 @@
     <!-- STEP 3 (MANUAL) -->
     <section class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-5">
       <div class="flex items-center gap-3 mb-2">
-        <div class="step-badge rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-sm">3</div>
+        <div class="brand-bg step-badge rounded-full text-white flex items-center justify-center font-bold text-sm">3</div>
         <div>
           <h2 class="font-semibold text-slate-800">Tempel Data JSON / Source Instagram</h2>
           <p class="text-xs text-slate-500">Tempelkan data JSON hasil dari link di atas</p>
         </div>
       </div>
       <textarea x-model="jsonInput" rows="5" placeholder="Paste seluruh isi halaman / JSON dari link Step 2 di sini..."
-        class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs focus:outline-none focus:ring-2 focus:ring-slate-900 mt-3 font-mono"></textarea>
-      <button @click="parseJson()" class="w-full h-11 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-semibold mt-3 shadow-sm transition inline-flex items-center justify-center gap-2">
+        class="brand-ring w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs focus:outline-none focus:ring-2 mt-3 font-mono"></textarea>
+      <button @click="parseJson()" class="brand-btn w-full h-11 rounded-xl font-semibold mt-3 shadow-sm transition inline-flex items-center justify-center gap-2">
         <i class="ph ph-cloud-arrow-down text-lg"></i>
         <span>Ekstrak & Download Media</span>
       </button>
@@ -110,7 +110,7 @@
         <label class="block mb-1 font-medium text-slate-700">Numeric User ID (PK):</label>
         <div class="flex gap-2">
           <input x-model="manualUserId" type="text" placeholder="cth: 4365707443" class="flex-1 border rounded-lg px-2.5 py-1.5 text-xs font-mono">
-          <button @click="genFromManualId()" class="bg-slate-800 text-white px-3 py-1.5 rounded-lg text-xs hover:bg-slate-700 transition">
+          <button @click="genFromManualId()" class="brand-btn px-3 py-1.5 rounded-lg text-xs transition">
             Terapkan ID
           </button>
         </div>
@@ -151,7 +151,7 @@
             </template>
           </div>
 
-          <a :href="m.url" :download="'instagram-media-' + (i + 1) + '.' + (m.isVideo ? 'mp4' : 'jpg')" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 text-center bg-slate-900 hover:bg-slate-800 text-white py-2.5 rounded-xl text-sm font-medium shadow-sm transition mt-3">
+          <a :href="m.url" :download="'instagram-media-' + (i + 1) + '.' + (m.isVideo ? 'mp4' : 'jpg')" target="_blank" rel="noopener noreferrer" class="brand-btn inline-flex items-center justify-center gap-2 text-center py-2.5 rounded-xl text-sm font-medium shadow-sm transition mt-3">
             <i class="ph ph-download-simple text-base"></i>
             <span x-text="'Download ' + (m.isVideo ? 'Video' : 'Foto')"></span>
           </a>

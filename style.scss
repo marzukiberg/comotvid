@@ -9,8 +9,24 @@ $slate-700: #334155;
 $slate-800: #1e293b;
 $slate-900: #0f172a;
 
-$primary: #0f172a;
-$primary-hover: #1e293b;
+// Platform Specific Brand Colors (Solid)
+$color-auto: #0f172a;       // Slate Dark
+$color-auto-hover: #1e293b;
+
+$color-ig: #e1306c;         // Instagram Magenta/Pink
+$color-ig-hover: #c1275b;
+
+$color-yt: #ff0000;         // YouTube Red
+$color-yt-hover: #cc0000;
+
+$color-tiktok: #000000;     // TikTok Solid Black / Cyan-Rose Accent
+$color-tiktok-hover: #171717;
+
+$color-pinterest: #e60023;  // Pinterest Red
+$color-pinterest-hover: #b8001c;
+
+$color-private: #d97706;    // Amber 600 for Private IG
+$color-private-hover: #b45309;
 
 .step-badge {
   width: 2.25rem;
@@ -24,23 +40,86 @@ textarea {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
-/* Solid Clean Buttons (Tanpa Gradient) */
-.btn-primary {
-  background-color: $primary;
-  color: #ffffff;
-  transition: background-color 0.15s ease, opacity 0.15s ease;
-
-  &:hover {
-    background-color: $primary-hover;
-  }
-
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
+// Brand Dynamic Styling Classes
+.theme-auto {
+  .brand-bg { background-color: $color-auto; }
+  .brand-bg-hover:hover { background-color: $color-auto-hover; }
+  .brand-text { color: $color-auto; }
+  .brand-border { border-color: $color-auto; }
+  .brand-ring:focus { --tw-ring-color: #{$color-auto}; }
+  .brand-btn {
+    background-color: $color-auto;
+    color: #ffffff;
+    &:hover { background-color: $color-auto-hover; }
   }
 }
 
-/* Card Styling */
+.theme-instagram {
+  .brand-bg { background-color: $color-ig; }
+  .brand-bg-hover:hover { background-color: $color-ig-hover; }
+  .brand-text { color: $color-ig; }
+  .brand-border { border-color: $color-ig; }
+  .brand-ring:focus { --tw-ring-color: #{$color-ig}; }
+  .brand-btn {
+    background-color: $color-ig;
+    color: #ffffff;
+    &:hover { background-color: $color-ig-hover; }
+  }
+}
+
+.theme-youtube {
+  .brand-bg { background-color: $color-yt; }
+  .brand-bg-hover:hover { background-color: $color-yt-hover; }
+  .brand-text { color: $color-yt; }
+  .brand-border { border-color: $color-yt; }
+  .brand-ring:focus { --tw-ring-color: #{$color-yt}; }
+  .brand-btn {
+    background-color: $color-yt;
+    color: #ffffff;
+    &:hover { background-color: $color-yt-hover; }
+  }
+}
+
+.theme-tiktok {
+  .brand-bg { background-color: $color-tiktok; }
+  .brand-bg-hover:hover { background-color: $color-tiktok-hover; }
+  .brand-text { color: $color-tiktok; }
+  .brand-border { border-color: $color-tiktok; }
+  .brand-ring:focus { --tw-ring-color: #{$color-tiktok}; }
+  .brand-btn {
+    background-color: $color-tiktok;
+    color: #ffffff;
+    &:hover { background-color: $color-tiktok-hover; }
+  }
+}
+
+.theme-pinterest {
+  .brand-bg { background-color: $color-pinterest; }
+  .brand-bg-hover:hover { background-color: $color-pinterest-hover; }
+  .brand-text { color: $color-pinterest; }
+  .brand-border { border-color: $color-pinterest; }
+  .brand-ring:focus { --tw-ring-color: #{$color-pinterest}; }
+  .brand-btn {
+    background-color: $color-pinterest;
+    color: #ffffff;
+    &:hover { background-color: $color-pinterest-hover; }
+  }
+}
+
+.theme-private {
+  .brand-bg { background-color: $color-private; }
+  .brand-bg-hover:hover { background-color: $color-private-hover; }
+  .brand-text { color: $color-private; }
+  .brand-border { border-color: $color-private; }
+  .brand-ring:focus { --tw-ring-color: #{$color-private}; }
+  .brand-btn {
+    background-color: $color-private;
+    color: #ffffff;
+    &:hover { background-color: $color-private-hover; }
+  }
+}
+
+// Media Card Styling
 .media-card {
   background-color: #ffffff;
   border-radius: 1rem;
@@ -60,7 +139,7 @@ textarea {
   }
 }
 
-/* Navigation Platform Pills */
+// Platform Navigation Pills in Navbar
 .platform-pill {
   display: inline-flex;
   align-items: center;
@@ -80,23 +159,41 @@ textarea {
     background-color: $slate-100;
   }
 
+  // Active state per brand
   &.platform-pill-active {
-    color: $slate-900;
     background-color: #ffffff;
     border-color: $slate-200;
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 
-    &:hover {
-      background-color: $slate-50;
+    &.pill-auto {
+      color: $color-auto;
+    }
+    &.pill-instagram {
+      color: $color-ig;
+      border-color: rgba($color-ig, 0.3);
+      background-color: #fff1f2;
+    }
+    &.pill-youtube {
+      color: $color-yt;
+      border-color: rgba($color-yt, 0.3);
+      background-color: #fef2f2;
+    }
+    &.pill-tiktok {
+      color: $color-tiktok;
+      border-color: rgba($color-tiktok, 0.3);
+      background-color: #fafafa;
+    }
+    &.pill-pinterest {
+      color: $color-pinterest;
+      border-color: rgba($color-pinterest, 0.3);
+      background-color: #fef2f2;
     }
   }
 }
 
-/* No Scrollbar Utility */
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
-
   &::-webkit-scrollbar {
     display: none;
   }
