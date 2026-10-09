@@ -8,9 +8,11 @@
     "watch:css": "npx -y sass --watch style.scss style.css --no-source-map",
     "dev": "npm run build:css && PORT=${PORT:-8787} ./dev.sh",
     "start": "npm run build:css && python3 server.py",
-    "check": "node --check app.js && python3 -c \"import ast; ast.parse(open('server.py').read())\""
+    "lint:dup": "npx jscpd",
+    "check": "npm run lint:dup && node --check app.js && node --check public-app.js && python3 -c \"import ast; ast.parse(open('server.py').read())\""
   },
   "devDependencies": {
+    "jscpd": "^4.0.5",
     "sass": "^1.83.0"
   }
 }
