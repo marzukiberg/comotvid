@@ -1,0 +1,166 @@
+{% extends "layout.html" %}
+
+{% block title %}ComotVid — Instagram Private Story Downloader{% endblock %}
+
+{% block body_attrs %}x-data="privateDownloader()" x-init="init()"{% endblock %}
+
+{% block content %}
+  <!-- HEADER -->
+  <header class="text-center mb-8">
+    <div class="w-12 h-12 min-w-12 min-h-12 rounded-2xl bg-slate-900 text-white shadow-sm mb-3 mx-auto flex items-center justify-center shrink-0 aspect-square">
+      <i class="ph ph-lock-key text-2xl leading-none"></i>
+    </div>
+    <h1 class="text-2xl font-bold tracking-tight text-slate-900">Private Story & Media Downloader</h1>
+    <p class="text-slate-600 text-sm mt-1">Download Story & Foto/Video dari Akun Privat yang kamu follow</p>
+  </header>
+
+  <!-- STEP 1: INPUT LINK -->
+  <section class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-5 mb-4">
+    <div class="flex items-center gap-3 mb-2">
+      <div class="step-badge rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-sm">1</div>
+      <div>
+        <h2 class="font-semibold text-slate-800">Masukkan Link Story Privat</h2>
+        <p class="text-xs text-slate-500">Contoh: https://www.instagram.com/stories/username/123456789/</p>
+      </div>
+    </div>
+    <div class="flex flex-col sm:flex-row items-stretch gap-2 mt-3">
+      <input x-model="inputUrl" @input.debounce.400ms="convertLink()" type="text" placeholder="https://www.instagram.com/stories/username/..."
+        class="flex-1 h-11 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900 leading-tight">
+      <button @click="convertLink()" :disabled="converting" class="h-11 bg-slate-900 hover:bg-slate-800 text-white px-5 rounded-xl text-sm font-semibold shadow-sm transition inline-flex items-center justify-center gap-1.5 shrink-0 disabled:opacity-60">
+        <i class="ph ph-arrows-clockwise text-base" x-show="!converting"></i>
+        <i class="ph ph-spinner animate-spin text-base" x-show="converting" style="display: none;"></i>
+        <span x-text="converting ? 'Memproses...' : 'Proses Link'"></span>
+      </button>
+    </div>
+    <p x-show="statusMsg" x-text="statusMsg" :class="isStatusError ? 'text-rose-600' : 'text-emerald-600'" class="text-xs mt-2.5 font-medium" style="display: none;"></p>
+  </section>
+
+  <!-- AUTO-FETCH STATUS BANNER -->
+  <div x-show="banner.show" :class="banner.type === 'success' ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : (banner.type === 'warn' ? 'bg-amber-50 border-amber-200 text-amber-800' : 'bg-slate-100 border-slate-200 text-slate-800')" class="mb-4 p-4 rounded-2xl border text-xs flex items-start gap-2.5 shadow-2xs" style="display: none;">
+    <i :class="banner.icon" class="text-lg shrink-0 mt-0.5"></i>
+    <div>
+      <div class="font-semibold mb-0.5" x-text="banner.title"></div>
+      <div x-text="banner.desc"></div>
+    </div>
+  </div>
+
+  <!-- FALLBACK MANUAL ACTION -->
+  <div x-show="showManualFallback" class="space-y-4" style="display: none;">
+    <!-- STEP 2 (MANUAL) -->
+    <section class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-5">
+      <div class="flex items-center gap-3 mb-2">
+        <div class="step-badge rounded-full bg-slate-800 text-white flex items-center justify-center font-bold text-sm">2</div>
+        <div>
+          <h2 class="font-semibold text-slate-800">Buka Link GraphQL di Tab Baru</h2>
+          <p class="text-xs text-slate-500">Buka link ini di browser yang sudah login Instagram</p>
+        </div>
+      </div>
+
+      <div class="mt-3">
+        <label class="text-xs font-medium text-slate-700">URL target GraphQL</label>
+        <div class="mt-1.5 flex flex-col sm:flex-row items-stretch gap-2">
+          <input :value="gqlUrl" type="text" readonly placeholder="Link GraphQL akan muncul otomatis di sini..."
+            class="flex-1 h-11 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs bg-slate-50 text-slate-600 select-all font-mono">
+          <div class="flex items-center gap-2 shrink-0">
+            <button @click="copyGql()" class="h-11 border border-slate-300 px-4 rounded-xl text-xs font-semibold hover:bg-slate-100 transition inline-flex items-center justify-center gap-1.5">
+              <i class="ph ph-copy text-sm"></i>
+              <span x-text="copiedText"></span>
+            </button>
+            <a :href="gqlUrl" target="_blank" rel="noopener noreferrer" class="h-11 bg-slate-900 text-white px-4 rounded-xl text-xs font-semibold hover:bg-slate-800 transition inline-flex items-center justify-center gap-1.5">
+              <i class="ph ph-arrow-square-out text-sm"></i><span>Buka Link</span>
+            </a>
+          </div>
+        </div>
+      </div>
+      <p class="text-[11px] text-slate-500 mt-2">
+        💡 Klik <b>Buka Link</b> &rarr; Di tab baru tekan <b>Ctrl+A</b> &rarr; <b>Ctrl+C</b> &rarr; Tempel di Step 3.
+      </p>
+    </section>
+
+    <!-- STEP 3 (MANUAL) -->
+    <section class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-5">
+      <div class="flex items-center gap-3 mb-2">
+        <div class="step-badge rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-sm">3</div>
+        <div>
+          <h2 class="font-semibold text-slate-800">Tempel Data JSON / Source Instagram</h2>
+          <p class="text-xs text-slate-500">Tempelkan data JSON hasil dari link di atas</p>
+        </div>
+      </div>
+      <textarea x-model="jsonInput" rows="5" placeholder="Paste seluruh isi halaman / JSON dari link Step 2 di sini..."
+        class="w-full border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs focus:outline-none focus:ring-2 focus:ring-slate-900 mt-3 font-mono"></textarea>
+      <button @click="parseJson()" class="w-full h-11 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-semibold mt-3 shadow-sm transition inline-flex items-center justify-center gap-2">
+        <i class="ph ph-cloud-arrow-down text-lg"></i>
+        <span>Ekstrak & Download Media</span>
+      </button>
+      <p x-show="parseError" x-text="parseError" class="text-xs text-rose-600 mt-2" style="display: none;"></p>
+    </section>
+  </div>
+
+  <!-- OPSI MANUAL -->
+  <details class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-4 mt-4 text-xs text-slate-600">
+    <summary class="font-medium cursor-pointer text-slate-700 flex items-center justify-between">
+      <span class="inline-flex items-center gap-1.5">
+        <i class="ph ph-gear text-base"></i>
+        Pengaturan Manual & User ID (PK)
+      </span>
+      <i class="ph ph-caret-down"></i>
+    </summary>
+    <div class="mt-4 space-y-3.5 pt-3 border-t border-slate-100">
+      <div>
+        <label class="block mb-1 font-medium text-slate-700">Numeric User ID (PK):</label>
+        <div class="flex gap-2">
+          <input x-model="manualUserId" type="text" placeholder="cth: 4365707443" class="flex-1 border rounded-lg px-2.5 py-1.5 text-xs font-mono">
+          <button @click="genFromManualId()" class="bg-slate-800 text-white px-3 py-1.5 rounded-lg text-xs hover:bg-slate-700 transition">
+            Terapkan ID
+          </button>
+        </div>
+      </div>
+      <div>
+        <label class="block mb-1 font-medium text-slate-700">Query Hash:</label>
+        <input x-model="queryHash" type="text" class="w-full border rounded-lg px-2.5 py-1.5 text-xs font-mono">
+      </div>
+    </div>
+  </details>
+
+  <!-- RESULTS (ALPINE TEMPLATE) -->
+  <section x-show="items.length > 0" class="mt-6" style="display: none;">
+    <div class="flex items-center justify-between mb-3">
+      <h2 class="font-semibold text-slate-800 inline-flex items-center gap-1.5">
+        <i class="ph ph-check-circle text-emerald-600 text-lg"></i>
+        <span><span x-text="items.length"></span> Media Siap Download</span>
+      </h2>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <template x-for="(m, i) in items" :key="i">
+        <div class="media-card bg-white rounded-2xl shadow-sm border border-slate-200/80 p-4 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <span :class="m.isVideo ? 'bg-slate-100 text-slate-800 border-slate-300' : 'bg-emerald-50 text-emerald-700 border-emerald-200'" class="text-xs font-semibold px-2.5 py-1 rounded-lg border inline-flex items-center gap-1.5">
+                <i :class="m.isVideo ? 'ph ph-video-camera' : 'ph ph-image'"></i>
+                <span x-text="m.isVideo ? 'Video' : 'Foto'"></span>
+              </span>
+              <span class="text-xs text-slate-400 font-mono" x-text="m.takenAt || ''"></span>
+            </div>
+
+            <!-- Preview Media -->
+            <template x-if="m.isVideo">
+              <video :src="m.url" controls preload="metadata" class="w-full rounded-xl my-2.5 bg-black"></video>
+            </template>
+            <template x-if="!m.isVideo">
+              <img :src="m.url" referrerpolicy="no-referrer" loading="lazy" class="w-full rounded-xl my-2.5 object-contain bg-slate-100 min-h-[160px]" @error="$el.src = m.thumb || $el.src">
+            </template>
+          </div>
+
+          <a :href="m.url" :download="'instagram-media-' + (i + 1) + '.' + (m.isVideo ? 'mp4' : 'jpg')" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 text-center bg-slate-900 hover:bg-slate-800 text-white py-2.5 rounded-xl text-sm font-medium shadow-sm transition mt-3">
+            <i class="ph ph-download-simple text-base"></i>
+            <span x-text="'Download ' + (m.isVideo ? 'Video' : 'Foto')"></span>
+          </a>
+        </div>
+      </template>
+    </div>
+  </section>
+{% endblock %}
+
+{% block scripts %}
+<script src="/app.js"></script>
+{% endblock %}

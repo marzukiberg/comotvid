@@ -1,0 +1,101 @@
+{% extends "layout.html" %}
+
+{% block title %}ComotVid — {{ platform_title }}{% endblock %}
+
+{% block body_attrs %}x-data="publicDownloader()" x-init="initPlatform('{{ active_platform }}')"{% endblock %}
+
+{% block content %}
+  <!-- HEADER -->
+  <header class="text-center mb-8">
+    <div class="w-12 h-12 min-w-12 min-h-12 rounded-2xl bg-slate-900 text-white shadow-sm mb-3 mx-auto flex items-center justify-center shrink-0 aspect-square">
+      <i class="ph {{ platform_icon }} text-2xl leading-none"></i>
+    </div>
+    <h1 class="text-2xl font-bold tracking-tight text-slate-900">{{ platform_heading }}</h1>
+    <p class="text-slate-600 text-sm mt-1">{{ platform_desc }}</p>
+  </header>
+
+  <!-- INPUT FORM -->
+  <section class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-5 mb-6">
+    <label class="block text-xs font-semibold text-slate-700 mb-2" x-text="platformLabel()"></label>
+    <div class="flex flex-col sm:flex-row items-stretch gap-2">
+      <div class="relative flex-1">
+        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+          <i class="ph ph-link text-base"></i>
+        </div>
+        <input x-model="url" @keydown.enter="fetchMedia()" type="text" :placeholder="platformPlaceholder()"
+          class="w-full h-11 border border-slate-300 rounded-xl pl-10 pr-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-slate-900 leading-tight">
+      </div>
+      <button @click="fetchMedia()" :disabled="loading" class="h-11 bg-slate-900 hover:bg-slate-800 text-white px-6 rounded-xl text-sm font-semibold shadow-sm transition inline-flex items-center justify-center gap-2 shrink-0 disabled:opacity-60">
+        <i class="ph ph-cloud-arrow-down text-lg" x-show="!loading"></i>
+        <i class="ph ph-spinner animate-spin text-lg" x-show="loading" style="display: none;"></i>
+        <span x-text="loading ? 'Mengambil media...' : 'Download'"></span>
+      </button>
+    </div>
+    <p class="text-[11px] text-slate-400 mt-2" x-text="platformHint()"></p>
+    <p x-show="statusMsg" x-text="statusMsg" :class="isError ? 'text-rose-600' : 'text-emerald-600'" class="text-xs mt-2.5 font-medium" style="display: none;"></p>
+  </section>
+
+  <!-- PRIVATE BANNER CTA (IG Only) -->
+  <div x-show="platform === 'auto' || platform === 'instagram'" class="bg-slate-100 border border-slate-200 rounded-2xl p-4 mb-6 flex items-center justify-between gap-4">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 min-w-10 min-h-10 rounded-xl bg-white shadow-xs text-slate-800 flex items-center justify-center shrink-0 aspect-square">
+        <i class="ph ph-lock-key text-xl"></i>
+      </div>
+      <div>
+        <h2 class="text-xs font-bold text-slate-800">Mau download Story akun Privat?</h2>
+        <p class="text-[11px] text-slate-500">Gunakan fitur Private Story Downloader untuk story akun yang kamu follow.</p>
+      </div>
+    </div>
+    <a href="/private" class="shrink-0 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold px-3.5 py-2 rounded-xl shadow-xs transition">
+      Buka Private &rarr;
+    </a>
+  </div>
+
+  <!-- RESULTS SECTION -->
+  <section x-show="items.length > 0" class="mt-6" style="display: none;">
+    <div class="flex items-center justify-between mb-3">
+      <h2 class="font-semibold text-slate-800 inline-flex items-center gap-1.5">
+        <i class="ph ph-check-circle text-emerald-600 text-lg"></i>
+        <span><span x-text="items.length"></span> Media Ditemukan <span x-show="detectedPlatform" class="text-xs font-normal text-slate-400" x-text="'· ' + detectedPlatform"></span></span>
+      </h2>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <template x-for="(m, i) in items" :key="i">
+        <div class="media-card bg-white rounded-2xl shadow-sm border border-slate-200/80 p-4 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <span :class="m.isVideo ? 'bg-slate-100 text-slate-800 border-slate-300' : (m.isAudio ? 'bg-purple-50 text-purple-700 border-purple-200' : 'bg-emerald-50 text-emerald-700 border-emerald-200')" class="text-xs font-semibold px-2.5 py-1 rounded-lg border inline-flex items-center gap-1.5">
+                <i :class="m.isVideo ? 'ph ph-video-camera' : (m.isAudio ? 'ph ph-music-note' : 'ph ph-image')"></i>
+                <span x-text="m.isVideo ? 'Video' : (m.isAudio ? 'Audio' : 'Foto')"></span>
+              </span>
+              <span class="text-xs text-slate-400 font-mono" x-text="m.takenAt || ''"></span>
+            </div>
+            <p x-show="m.title" x-text="m.title" class="text-xs text-slate-600 line-clamp-2 mb-2 font-medium"></p>
+
+            <!-- Preview Media -->
+            <template x-if="m.isVideo">
+              <video :src="m.url" controls preload="metadata" class="w-full rounded-xl my-2.5 bg-black"></video>
+            </template>
+            <template x-if="m.isAudio">
+              <div class="my-3 p-4 bg-slate-50 border border-slate-200/80 rounded-xl">
+                <audio :src="m.url" controls class="w-full"></audio>
+              </div>
+            </template>
+            <template x-if="!m.isVideo && !m.isAudio">
+              <img :src="m.url" referrerpolicy="no-referrer" loading="lazy" class="w-full rounded-xl my-2.5 object-contain bg-slate-100 min-h-[160px]" @error="$el.src = m.thumb || $el.src">
+            </template>
+          </div>
+
+          <a :href="m.url" :download="'media-' + (i + 1) + '.' + (m.isVideo ? 'mp4' : (m.isAudio ? 'mp3' : 'jpg'))" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 text-center bg-slate-900 hover:bg-slate-800 text-white py-2.5 rounded-xl text-sm font-medium shadow-sm transition mt-3">
+            <i class="ph ph-download-simple text-base"></i>
+            <span x-text="'Download ' + (m.isVideo ? 'Video' : (m.isAudio ? 'Audio' : 'Foto'))"></span>
+          </a>
+        </div>
+      </template>
+    </div>
+  </section>
+{% endblock %}
+
+{% block scripts %}
+<script src="/public-app.js"></script>
+{% endblock %}

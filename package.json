@@ -1,11 +1,16 @@
 {
   "name": "comotvid",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "private": true,
-  "description": "ComotVid — Private Instagram Downloader (client-side + local resolver)",
+  "description": "ComotVid — Media Downloader (Jinja2 + Alpine.js + SCSS)",
   "scripts": {
-    "dev": "PORT=${PORT:-8787} ./dev.sh",
-    "start": "python3 server.py",
+    "build:css": "npx -y sass style.scss style.css --no-source-map",
+    "watch:css": "npx -y sass --watch style.scss style.css --no-source-map",
+    "dev": "npm run build:css && PORT=${PORT:-8787} ./dev.sh",
+    "start": "npm run build:css && python3 server.py",
     "check": "node --check app.js && python3 -c \"import ast; ast.parse(open('server.py').read())\""
+  },
+  "devDependencies": {
+    "sass": "^1.83.0"
   }
 }
