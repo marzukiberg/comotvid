@@ -1,4 +1,4 @@
-# IG Story Saver
+# ComotVid
 
 Private Instagram story downloader — ala savevid.net/instagram-private-downloader.
 
